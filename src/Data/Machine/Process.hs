@@ -38,7 +38,7 @@ module Data.Machine.Process
   , buffered
   , flattened
   , fold
-  , fold1
+  , semifold
   , scan
   , scan1
   , scanMap
@@ -490,12 +490,12 @@ fold func =
 {-# INLINABLE fold #-}
 
 -- |
--- 'fold1' is a variant of 'fold' that has no starting value argument
+-- 'semifold' is a variant of 'fold' that has no starting value argument
 --
 -- This can be constructed from a plan with
 -- @
--- fold1 :: Category k => (a -> a -> a) -> Machine (k a) a
--- fold1 func = construct $ await >>= go where
+-- semifold :: Category k => (a -> a -> a) -> Machine (k a) a
+-- semifold func = construct $ await >>= go where
 --   go cur = do
 --     next <- await <|> yield cur *> stop
 --     go $! func cur next
@@ -503,17 +503,17 @@ fold func =
 --
 -- Examples:
 --
--- >>> run $ fold1 (+) <~ source [1..5]
+-- >>> run $ semifold (+) <~ source [1..5]
 -- [15]
 --
-fold1 :: Category k => (a -> a -> a) -> Machine (k a) a
-fold1 func =
+semifold :: Category k => (a -> a -> a) -> Machine (k a) a
+semifold func =
   let step t = t `seq` encased
              $ Await (step . func t)
                      id
                      (encased $ Yield t stopped)
   in  encased $ Await step id stopped
-{-# INLINABLE fold1 #-}
+{-# INLINABLE semifold #-}
 
 -- | Break each input into pieces that are fed downstream
 -- individually.
@@ -563,7 +563,7 @@ sinkPart_ p = go
                   Refl
                   (go ff)
 
--- | Apply a monadic function to each element of a 'ProcessT'.
+-- | Semiapplicative a monadic function to each element of a 'ProcessT'.
 --
 -- This can be constructed from a plan with
 -- @
@@ -659,13 +659,13 @@ intersperse sep = construct $ await >>= go where
 -- |
 -- Return the maximum value from the input
 largest :: (Category k, Ord a) => Machine (k a) a
-largest = fold1 max
+largest = semifold max
 {-# INLINABLE largest #-}
 
 -- |
 -- Return the minimum value from the input
 smallest :: (Category k, Ord a) => Machine (k a) a
-smallest = fold1 min
+smallest = semifold min
 {-# INLINABLE smallest #-}
 
 -- |
@@ -694,7 +694,7 @@ sequencing = autoM id
 {-# INLINABLE sequencing #-}
 
 -- |
--- Apply a function to all values coming from the input
+-- Semiapplicative a function to all values coming from the input
 --
 -- This can be constructed from a plan with
 -- @
@@ -715,7 +715,7 @@ mapping f =
 {-# INLINABLE mapping #-}
 
 -- |
--- Apply an effectful to all values coming from the input.
+-- Semiapplicative an effectful to all values coming from the input.
 --
 -- Alias to 'autoM'.
 traversing :: (Category k, Monad m) => (a -> m b) -> MachineT m (k a) b

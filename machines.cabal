@@ -42,19 +42,19 @@ custom-setup
 
 library
   build-depends:
-    adjunctions  >= 4.2   && < 5,
-    base         >= 4.5   && < 5,
-    comonad      >= 3     && < 6,
-    containers   >= 0.3   && < 0.6,
+    adjunctions   >= 4.2   && < 5,
+    base          >= 4.5   && < 5,
+    comonad       >= 3     && < 6,
+    containers    >= 0.3   && < 0.6,
     distributive             < 0.6,
-    pointed      >= 3     && < 6,
-    profunctors  >= 3     && < 6,
-    semigroupoids >= 5    && < 6,
-    semigroups   >= 0.8.3 && < 1,
-    transformers >= 0.3   && < 0.6,
+    pointed       >= 3     && < 6,
+    profunctors   >= 3     && < 6,
+    semigroupoids >= 6    && < 7,
+    semigroups    >= 0.8.3 && < 1,
+    transformers  >= 0.3   && < 0.6,
     transformers-compat >= 0.3,
-    mtl          >= 2     && < 2.3,
-    void         >= 0.6.1 && < 1
+    mtl           >= 2     && < 2.3,
+    void          >= 0.6.1 && < 1
 
   exposed-modules:
     Data.Machine

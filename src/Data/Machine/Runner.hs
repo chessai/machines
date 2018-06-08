@@ -66,7 +66,7 @@ foldT = foldlT mappend mempty
 
 -- | Run a machine with no input until it yields for the first time,
 -- then stop it. This is intended primarily for use with accumulating
--- machines, such as the ones produced by 'fold' or 'fold1'
+-- machines, such as the ones produced by 'fold' or 'semifold'
 --
 -- @runT1 m = getFirst <$> foldMapT (First . Just) (m ~> taking 1)@
 runT1 :: Monad m => MachineT m k o -> m (Maybe o)
